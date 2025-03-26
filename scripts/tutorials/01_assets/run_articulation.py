@@ -65,6 +65,7 @@ def design_scene() -> tuple[dict, list[list[float]]]:
 
     # Articulation
     cartpole_cfg = CARTPOLE_CFG.copy()
+    print(cartpole_cfg)
     cartpole_cfg.prim_path = "/World/Origin.*/Robot"
     cartpole = Articulation(cfg=cartpole_cfg)
 

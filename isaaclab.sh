@@ -40,7 +40,7 @@ extract_isaacsim_path() {
         # Use the python executable to get the path
         local python_exe=$(extract_python_exe)
         # Retrieve the path importing isaac sim and getting the environment path
-        if [ $(${python_exe} -m pip list | grep -c 'isaacsim-rl') -gt 0 ]; then
+        if [ $(uv pip list | grep -c 'isaacsim-rl') -gt 0 ]; then
             local isaac_path=$(${python_exe} -c "import isaacsim; import os; print(os.environ['ISAAC_PATH'])")
         fi
     fi
@@ -73,7 +73,7 @@ extract_python_exe() {
             # note: we need to check system python for cases such as docker
             # inside docker, if user installed into system python, we need to use that
             # otherwise, use the python from the kit
-            if [ $(python -m pip list | grep -c 'isaacsim-rl') -gt 0 ]; then
+            if [ $(uv pip list | grep -c 'isaacsim-rl') -gt 0 ]; then
                 local python_exe=$(which python)
             fi
         fi
@@ -102,7 +102,7 @@ extract_isaacsim_exe() {
         # check for installation using Isaac Sim pip
         # note: pip installed Isaac Sim can only come from a direct
         # python environment, so we can directly use 'python' here
-        if [ $(python -m pip list | grep -c 'isaacsim-rl') -gt 0 ]; then
+        if [ $(uv pip list | grep -c 'isaacsim-rl') -gt 0 ]; then
             # Isaac Sim - Python packages entry point
             local isaacsim_exe="isaacsim isaacsim.exp.full"
         else
@@ -121,7 +121,7 @@ install_isaaclab_extension() {
     # if the directory contains setup.py then install the python module
     if [ -f "$1/setup.py" ]; then
         echo -e "\t module: $1"
-        ${python_exe} -m pip install --editable $1
+        uv pip install --editable $1
     fi
 }
 
@@ -299,8 +299,8 @@ while [[ $# -gt 0 ]]; do
                 shift # past argument
             fi
             # install the learning frameworks specified
-            ${python_exe} -m pip install -e ${ISAACLAB_PATH}/source/isaaclab_rl["${framework_name}"]
-            ${python_exe} -m pip install -e ${ISAACLAB_PATH}/source/isaaclab_mimic["${framework_name}"]
+            uv pip install -e ${ISAACLAB_PATH}/source/isaaclab_rl["${framework_name}"]
+            uv pip install -e ${ISAACLAB_PATH}/source/isaaclab_mimic["${framework_name}"]
 
             # check if we are inside a docker container or are building a docker image
             # in that case don't setup VSCode since it asks for EULA agreement which triggers user interaction
@@ -418,7 +418,7 @@ while [[ $# -gt 0 ]]; do
             python_exe=$(extract_python_exe)
             # install pip packages
             cd ${ISAACLAB_PATH}/docs
-            ${python_exe} -m pip install -r requirements.txt > /dev/null
+            uv pip install -r requirements.txt > /dev/null
             # build the documentation
             ${python_exe} -m sphinx -b html -d _build/doctrees . _build/current
             # open the documentation
